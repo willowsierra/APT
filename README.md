@@ -93,31 +93,31 @@ Before using the Awesome Parallel Toolbox for running code on the clusters, you
 should compile your Matlab code by calling 'APT_compile' from Matlab. Setup your
 Matlab path so that all the code you need is accessible and call:
 
-```
->> APT_compile
-```
+  ```
+  >> APT_compile
+  ```
 
 It will package all the .m and .mex files into a stand-alone binary located in 
-<APT_PARAMS.temp_dir> (see 'temp_dir' in section "APT configuration").                        
+<APT_PARAMS.temp_dir> (see 'temp_dir' in section "APT configuration"). 
 You only have to recompile if the functions you run in parallel have changed.
 You don't need to compile if you run your code on your local machine.
 
 Once compilation is complete, you can launch any function in parallel on the 
 cluster. For example, let's suppose you have the following function 'foo':
 
-```
->> function [u v] = foo(a, b, c)
->>     u = a + b + c;
->>     v = a * b * c;
->> end
-```
+  ```
+  >> function [u v] = foo(a, b, c)
+  >>     u = a + b + c;
+  >>     v = a * b * c;
+  >> end
+  ```
 
 If you want to compute 'foo(1, 3, 4)', 'foo(2, 3, 5)' and 'foo(8, 3, 0)' then
 simply do:
 
-```
->> [u v] = APT_run('foo', [1 2 8], {3}, [4 5 0]);
-```
+  ```
+  >> [u v] = APT_run('foo', [1 2 8], {3}, [4 5 0]);
+  ```
 
 You will get u = {8; 10; 11} and v = {12; 30; 0}. More generally you can launch 
 any function on a set of N arguments. If an argument is the same for all 
@@ -136,7 +136,7 @@ Examples and tricks
 Looking at errors
 -----------------
 
-Here <temp_drive> and <temp_dir> refer to the value defined in APT_params.m
+Here \<temp_drive\> and <temp_dir> refer to the value defined in APT_params.m
 <taskID> is the number displayed when calling APT_run.
 The directory '<temp_drive>/$USER/<temp_dir>/<taskID>/logs'
 contains the output for each jobs. Each report is named 'report_xxx.txt' 
