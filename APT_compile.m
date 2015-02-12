@@ -36,7 +36,10 @@ function APT_compile(varargin)
         end
         i = i + 1;
     end
-    
+
+    % Add APT path to Ignore path
+    params.Ignore{end+1} = fileparts(which(mfilename()));
+
     if nargin < 1
         fun_names = {};
     elseif iscell(fun_names)
@@ -158,12 +161,7 @@ end
 %==========================================================================
 function src_path = get_src_path(ignore)    
     src_path = find_user_paths(ignore);
-    
-    toolbox_path = fileparts(which(mfilename()));
-    if isempty(find(strcmp(src_path, toolbox_path), 1))
-        src_path = [toolbox_path src_path];
-    end
-    
+
     if isempty(find(strcmp(src_path, cd()), 1))
         src_path = [cd() src_path];
     end
@@ -195,19 +193,29 @@ function dirs = find_user_paths(ignore)
                 select(i) = false;
             end
         end
-    end    
+    end
     dirs = dirs(select);
 end
 
 %==========================================================================
+function dirs = get_non_builtin_path_cell()
+    dirs = regexp(path, pathsep, 'split');
+    valid_dir = true(1, numel(dirs));
+    %ignoreroot = toolboxdir('');
+    ignoreroot = matlabroot;
+    for i = 1 : numel(dirs)
+        if ~strfind(dirs{i}, ignoreroot) == 0
+            valid_dir(i) = 0;
+        end
+    end
+    dirs = dirs(valid_dir);
+end
+
+%==========================================================================
 function dirs = path2cell()
-    p = path();
-    index = [0 strfind(p, pathsep) (length(p)+1)];
-    n_dirs = length(index) - 1;
-    dirs = cell(1, n_dirs);
-    valid_dir = true(1, n_dirs);
-    for i = 1 : n_dirs
-        dirs{i} = p((index(i)+1) : (index(i+1)-1));
+    dirs = regexp(path, pathsep, 'split');
+    valid_dir = true(1, numel(dirs));
+    for i = 1 : numel(dirs)
         if ~isdir(dirs{i})
             valid_dir(i) = 0;
             fprintf('Warning, invalid directory in matlab path: %s\n', dirs{i});
