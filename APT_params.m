@@ -43,7 +43,7 @@ function APT_params()
     % 'node019', 'node020'}' on Sequoia to run on the nodes which have more 
 	% memory. Default is set in 'APT_params' and launch the jobs on any node.
     APT_PARAMS.host_name = {};
-    
+
     % Force local computation. It has priority over 'cluster_id'.
     APT_PARAMS.force_local = 0;           
     
@@ -91,7 +91,12 @@ function APT_params()
         'matlab-2010b' '/local/MCR/v714'; ...
         'matlab-2011a' '/local/MCR/v715'; ...        
         'matlab-2012a' '/local/MCR/v717'; ...        
+        'matlab-2013b' '/local/MCR/v82'; ...        
+        'matlab-2014b' '/local/MCR/v84'; ...        
         };
+
+    % Default queues for each cluster:
+    APT_PARAMS.queues = { {'all.q'} {'goodboy.q', 'all.q'} };
     
     % Generating script files
     generate_utilities();

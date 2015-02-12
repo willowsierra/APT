@@ -17,7 +17,8 @@ function varargout = APT_run(task, varargin)
                     'NJobs', 0, ... 
                     'NoJVM', 1, ...                    
                     'NoLoad', 0, ...                    
-                    'NSlots', 1, ...                    
+                    'NSlots', 1, ...  
+                    'Queues', {{}}, ...   
                     'ResumeType', 0, ...                    
                     'ShellVar', {{}}, ...
                     'TimeOut', 0, ...
@@ -49,40 +50,18 @@ function varargout = APT_run(task, varargin)
     % MOD: params, parallel_args
     if ischar(task) 
         i = 1;
-        while i <= length(varargin) && (iscell(varargin{i}) || isnumeric(varargin{i}) || isstruct(varargin{i})) 
-            if isnumeric(varargin{i})
-                if length(varargin{i}) ~= numel(varargin{i})
-                    n_args = size(varargin{i}, 1);
-                    args = cell(n_args, 1);
-                    for j = 1 : n_args
-                        args{j} = varargin{i}(j, :);
-                    end  
-                    varargin{i} = args;              
-                else
-                    varargin{i} = num2cell(varargin{i});
-                end
-            end
-            if isstruct(varargin{i})
-                c = cell(1, length(varargin{i}));
-                for k = 1 : length(varargin{i})
-                    c{k} = varargin{i}(k);                    
-                end
-                varargin{i} = c;
-            end
-            if isempty(varargin{i})
-                error('Argument %d is empty.', i+1);
-            end
+        while i <= length(varargin) && (iscell(varargin{i}) || islogical(varargin{i}) || isnumeric(varargin{i}) || isstruct(varargin{i})) 
             if length(size(varargin{i})) >= 3
                 error('Argument %d should be at most 2-dimensional.', i+1);
-            end
-            if length(varargin{i}) ~= numel(varargin{i})
+            end 
+            if ~iscell(varargin{i})
                 n_args = size(varargin{i}, 1);
                 args = cell(n_args, 1);
                 for j = 1 : n_args
                     args{j} = varargin{i}(j, :);
                 end  
                 varargin{i} = args;
-            end                      
+            end
             i = i + 1;
         end        
         parallel_args = varargin(1:(i-1));
@@ -233,7 +212,37 @@ function varargout = APT_run(task, varargin)
         end               
         if params.ClusterID < 0 || params.ClusterID > length(APT_PARAMS.cluster_IP)
             error('Unknown cluster ID ''%d'' : ClusterID should be 1 for meleze or 2 for sequoia (also check APT_params.m)', params.ClusterID);
-        end        
+        end   
+        
+        if isempty(params.Queues)
+            params.Queues = APT_PARAMS.queues;
+        else
+            if ischar(params.Queues)
+                if params.clusterID == 0
+                    error('Please specify a clusterID or enter the Queues as a cell array with one entry for Meleze and one entry for Sequoia');
+                else
+                    q = params.Queues;
+                    params.Queues = {};
+                    params.Queues{params.clusterID} = q;
+                end
+            elseif ~iscell(params.Queues)
+                error('Wrong type for params.Queues: should be a string or a cell of strings');
+            end
+        end
+        
+        for i = 1 : 2
+            for j = 1 : length(params.Queues{i})
+                if i == 1
+                    if isempty(find(strcmp(params.Queues{i}{j}, 'all.q'), 1))
+                        error('Unknown queue %s for cluster %s.', params.Queues{i}{j}, APT_PARAMS.cluster_IP{params.ClusterID})
+                    end
+                elseif i == 2
+                    if isempty(find(strcmp(params.Queues{i}{j}, {'all.q', 'gpu.q', 'goodboy.q'}), 1))
+                        error('Unknown queue %s for cluster %s.', params.Queues{i}{j}, APT_PARAMS.cluster_IP{params.ClusterID})
+                    end
+                end
+            end
+        end
     end    
             
     if ischar(task)            
@@ -373,8 +382,7 @@ function varargout = APT_run(task, varargin)
     last_n_finish = -Inf;
     while ~isempty(waiting)
         if params.TimeOut > 0 && toc > params.TimeOut
-            fprintf('TIMEOUT !\n');
-            return;
+            error('TIMEOUT !\n');
         end
         
         [s,key] = system(sprintf('read -n1 -s -t%d key; echo $key', params.pause_time));                       
@@ -581,7 +589,11 @@ function task_id = open_parallel_task(parallel_args, params)
     argsID = zeros(1, n_args);
     n_common = 0;
     for i = 1 : n_args
-        if length(parallel_args{i}) == 1
+        if isempty(parallel_args{i})
+            is_common(i) = 1; 
+            n_common = n_common + 1;
+            argsID(i) = -n_common;
+        elseif length(parallel_args{i}) == 1
             is_common(i) = 1; 
             n_common = n_common + 1;
             argsID(i) = -n_common;
@@ -690,6 +702,10 @@ function write_submit_scripts(params)
         if params.NSlots > 1
             fprintf(fid,'#$ -pe serial %d\n', params.NSlots);    
         end
+        if ~isempty(params.Queues)            
+            queuelist = sprintf(',%s', params.Queues{params.ClusterID}{:});
+            fprintf(fid,'#$ -q %s\n', queuelist(2:end));    
+        end
         if ~isempty(params.HostName)
             if iscell(params.HostName)
                 if length(params.HostName) == 1
@@ -795,7 +811,13 @@ function [jobs_info errors] = update_jobs_info(params, jobs_info, remove_errors)
         remove_errors = 0;
     end
 
-    drive = APT_get_drive();
+    try
+        drive = APT_get_drive();
+    catch
+        fprintf('APT could not read the disk. It usually happens when your Kerberos ticket expires.\nType ''return'' to try again.\n');
+        keyboard;
+        drive = APT_get_drive();
+    end
     res_dir = fullfile(drive, APT_PARAMS.temp_dir, params.task_id, 'res');
     sh_dir  = fullfile(drive, APT_PARAMS.temp_dir, params.task_id, 'scripts');
     errors = zeros(1, params.NJobs);
@@ -1097,9 +1119,9 @@ function script = generate_launcher(params, job_file, stop_file)
     script = fullfile(sh_dir,'launcher.sh');
     fid = fopen(fullfile(drive, script),'w');
     % We count the number of used cores
-    cmdcount = sprintf('$QSTAT -u "%s" | sed "1d; 2d; s/.* \\([0-9][0-9]*\\) *$/\\1/" | echo \\`sum=0; while read line; do let sum=$sum+$line; done; echo $sum\\` ', APT_PARAMS.login);
+    cmdcount = sprintf('$QSTAT | grep "%s" | sed "s/.* \\([0-9][0-9]*\\) *$/\\1/" | echo \\`sum=0; while read line; do let sum=$sum+$line; done; echo $sum\\` ', APT_PARAMS.login);
     allcount = '$QSTAT -u "*" | sed "1d; 2d; s/.* \([0-9][0-9]*\) *$/\\1/" | echo \`sum=0; while read line; do let sum=$sum+$line; done; echo $sum\` ';
-    numjob = '$QSTAT -u "*" | grep $USER | wc -l';
+    numjob = sprintf('$QSTAT -u "*" | grep "%s" | wc -l', APT_PARAMS.login);
     fprintf(fid,'#!/bin/sh\n');
     fprintf(fid,'cd %s\n', fullfile(cluster_drive, sh_dir));
     fprintf(fid,'module add sge cluster-tools\n');
@@ -1117,7 +1139,8 @@ function script = generate_launcher(params, job_file, stop_file)
     fprintf(fid,'while read JOBID\n');
     fprintf(fid,'do\n');
     fprintf(fid,'	COUNTERJOBS=`%s`\n', allcount);     
-    fprintf(fid,'   if [ "$COUNTERJOBS" -ge "$QUEUE" ]; then\n');       
+    %fprintf(fid,'   if [ "$COUNTERJOBS" -ge "$QUEUE" ]; then\n');   
+    fprintf(fid,'   if [ "$COUNTERJOBS" -ge "1000000000" ]; then\n');   
     fprintf(fid,'       date "+[%%d-%%b-%%Y %%T] Task %s: Cluster queue is full, waiting for free slots."\n', params.task_id);     
     fprintf(fid,'       LAST=`%s`\n', numjob);
     fprintf(fid,'       if [ "$LAST" -ne "0" ]; then\n');

@@ -1,19 +1,25 @@
 function APT_entry_point(task_id, job_id, fun, clusterID)
-    global APT_PARAMS JOB_INFO;
-    APT_params();           
+    try
+        global APT_PARAMS JOB_INFO;
+        
+        APT_params();           
+        
+        clusterID = str2double(clusterID);
+        drive = get_drive_path(clusterID);
+        args_dir = fullfile(drive, APT_PARAMS.temp_dir, task_id, 'args');
+        res_dir  = fullfile(drive, APT_PARAMS.temp_dir, task_id, 'res');
+        sh_dir   = fullfile(drive, APT_PARAMS.temp_dir, task_id, 'scripts');
     
-    clusterID = str2double(clusterID);
-    drive = get_drive_path(clusterID);
-    args_dir = fullfile(drive, APT_PARAMS.temp_dir, task_id, 'args');
-    res_dir  = fullfile(drive, APT_PARAMS.temp_dir, task_id, 'res');
-    sh_dir   = fullfile(drive, APT_PARAMS.temp_dir, task_id, 'scripts');
+        res_file_tmp = fullfile(res_dir, sprintf('res_%s.mat', job_id));
+        res_file     = fullfile(res_dir, sprintf('res%s.mat', job_id));        
+    catch E        
+        fprintf('Critical error: %s\n', E.message);
+        print_error(E);
+    end  
     
-    res_file_tmp = fullfile(res_dir, sprintf('res_%s.mat', job_id));
-    res_file     = fullfile(res_dir, sprintf('res%s.mat', job_id));        
+    try            
+        stop_file = fullfile(sh_dir, 'stop');    
     
-    stop_file = fullfile(sh_dir, 'stop');    
-    
-    try     
         % Mark job as started
         % Write job ID to allow deletion from master 
         if ~isdeployed 
