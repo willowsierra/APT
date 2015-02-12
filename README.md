@@ -76,8 +76,9 @@ To install the Awesome Parallel Toolbox simply follow the following steps :
     fi
 	 
 
-<a name="quickstart">Quick start</a>
-====================================
+<a name="quickstart"></a>
+Quick start
+===========
 
 Before using the Awesome Parallel Toolbox for running code on the clusters, you 
 should compile your Matlab code by calling 'APT_compile' from Matlab. Setup your
@@ -112,12 +113,14 @@ rows. Each row will be distributed to its corresponding function call. The
 output of APT_run will be a cell with N rows containing the return parameters of
 each function calls.
 
-<a name="examples">Examples and tricks</a>
-==========================================
+<a name="examples"></a>
+Examples and tricks
+===================
 
-<a name="ex_errors">Looking at errors</a>
------------------------------------------
- 
+<a name="ex_errors"></a>
+Looking at errors
+---------------------
+
   Here <temp_drive> and <temp_dir> refer to the value defined in APT_params.m
   <taskID> is the number displayed when calling APT_run.
   The directory '<temp_drive>/$USER/<temp_dir>/<taskID>/logs'
@@ -320,8 +323,9 @@ Making coffee
 >> APT_run([], 'Coffee', 1);
 
 	
-<a name="params">Optional parameters</a>
-========================================
+<a name="params"></a>
+Optional parameters
+===================
 
 The 'APT_run' function has additional optional parameters that you can use in
 the traditional Matlab property/value scheme. For example to run 'foo' on local 
@@ -432,8 +436,9 @@ The available options are:
                               if all jobs are finished and 0 otherwise.
                              
                               
-<a name="compilation">Compilation options</a>
-=============================================
+<a name="compilation"></a>
+Compilation options
+===================
 
 Compilation may take some time. However you can make it faster by compiling only
 few target functions. It won't be possible to run other functions in parallel 
@@ -457,8 +462,9 @@ limitation use:
   >> APT_compile(..., 'NoJVM', 0);
           
 	
-<a name="config">APT Configuration</a>
-==========================================
+<a name="config"></a>
+APT Configuration
+=================
 
 Among the 'APT_run' options, you can set the Awesome Parallel Toolbox default 
 settings in the file APT_params.m:
@@ -513,8 +519,9 @@ settings in the file APT_params.m:
                  machine. If null it will use all your cores.           
 
 
-<a name="versions">Version information</a>
-===========================================
+<a name="versions"></a>
+Version information
+===================
 
 APT 1.4:
    - APT_globals.m was removed.
