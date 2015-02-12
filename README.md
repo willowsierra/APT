@@ -18,8 +18,9 @@ Table of Contents
 - <a href="#versions">Version information</a>
 
 
-<a name="specific">Have a specific need ?</a>
-=============================================
+<a name="specific"></a>
+Have a specific need ?
+======================
 
 APT is like iPhone: there's an option for everything. Please check sections 
 "Optional parameters" and "Compilation options" for a comprehensive list of 
