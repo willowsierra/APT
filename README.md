@@ -332,18 +332,18 @@ Job information at runtime
 
 You have access to a global structure named JOB_INFO which has the following
 fields:
-- *JOB_INFO.cluster_id*:   0 if the function is running on local machine,    
-                         1 if it is running on Meleze and 2 for Sequoia.
+- **JOB_INFO.cluster_id**: 0 if the function is running on local machine,    
+  1 if it is running on Meleze and 2 for Sequoia.
                          
-- **JOB_INFO.user_dir**:     This is a directory located on the local node 
-                         (or computer if you run on your machine). This
-                         directory is designed to store temporary files for 
-                         the running task. Each task has its own directory so 
-                         that the files do not mix up between tasks.
+- **JOB_INFO.user_dir**: This is a directory located on the local node 
+  (or computer if you run on your machine). This
+  directory is designed to store temporary files for 
+  the running task. Each task has its own directory so 
+  that the files do not mix up between tasks.
                          
-- **JOB_INFO.job_id**:       This is the current parameter set number: 'job_id' is 
-                         between 1 and N where N is the number of different
-                         parameter sets.   
+- **JOB_INFO.job_id**: This is the current parameter set number: 'job_id' is 
+  between 1 and N where N is the number of different
+  parameter sets.   
                                                         
 <a name="ex_distrib"></a>
 Distributing APT
@@ -377,105 +377,105 @@ machine with 2 Matlab instances:
 
 The available options are:
 
-- 'Coffee' [default: 0]:      If non-zero it makes the coffee.
+- **Coffee** [default: 0]:      If non-zero it makes the coffee.
 
-- 'ClusterID' [default: 0]:   Choice of the cluster. Jobs will be launched on
-                              Meleze if set to 1 and Sequoia if set to 2.
-                              If set to 0, 'APT_run' will choose the cluster       
-                              which is the less busy.
+- **ClusterID** [default: 0]:   Choice of the cluster. Jobs will be launched on
+                                Meleze if set to 1 and Sequoia if set to 2.
+                                If set to 0, 'APT_run' will choose the cluster       
+                                which is the less busy.
 
-- 'CombineArgs' [default: 0]: If this option is set to a non-zero value,
-                              'APT_run' allows you to pass cell arrays of 
-                              arbitrary size as arguments. They will be combined
-                              to form all possible arrangements of arguments. 
-                              The output will be a N-dimensional cell with N the
-                              number of non constant arguments.
+- **CombineArgs** [default: 0]: If this option is set to a non-zero value,
+                                'APT_run' allows you to pass cell arrays of 
+                                arbitrary size as arguments. They will be combined
+                                to form all possible arrangements of arguments. 
+                                The output will be a N-dimensional cell with N the
+                                number of non constant arguments.
                               
-- 'GroupBy' [default: 0]:     Not available for computation on your local 
-                              machine.If non-zero, 'APT_run' will approximately
-                              compute 'GroupBy' sets of arguments per job. Use 
-                              this parameter to make short jobs a bit longer so
-                              that you do not pay too much overhead for starting
-                              a job on the cluster.     
+- **GroupBy** [default: 0]:     Not available for computation on your local 
+                                machine.If non-zero, 'APT_run' will approximately
+                                compute 'GroupBy' sets of arguments per job. Use 
+                                this parameter to make short jobs a bit longer so
+                                that you do not pay too much overhead for starting
+                                a job on the cluster.     
 
-- 'HostName' [default: {}]:   Specify nodes which should be used, e.g. use:
-                              '{'node017', 'node018', 'node019', 'node020'}' in 
-                              conjonction with 'ClusterID' set to 2 to run your 
-                              jobs on the Sequoia nodes which have more memory. 
-                              Default is set in 'APT_params' and launch the jobs
-                              on any node.
+- **HostName** [default: {}]:   Specify nodes which should be used, e.g. use:
+                                '{'node017', 'node018', 'node019', 'node020'}' in 
+                                conjonction with 'ClusterID' set to 2 to run your 
+                                jobs on the Sequoia nodes which have more memory. 
+                                Default is set in 'APT_params' and launch the jobs
+                                on any node.
                               
-- 'KeepTmp' [default: 0]:     If non-zero: do not erase the temporary directory 
-                              \<temp_drive\>/\<temp_dir\>/\<taskID\> containing the 
-                              .mat results files after the task is completed. It
-                              is particulary useful to debug when used in 
-                              combination with the 're-launch feature': see 
-                              section 'Interacting with jobs: Relaunching task'.                                 
+- **KeepTmp** [default: 0]:     If non-zero: do not erase the temporary directory 
+                                \<temp_drive\>/\<temp_dir\>/\<taskID\> containing the 
+                                .mat results files after the task is completed. It
+                                is particulary useful to debug when used in 
+                                combination with the 're-launch feature': see 
+                                section 'Interacting with jobs: Relaunching task'.                                 
 
-- 'Libs' [default: {}]:       If your program uses additional libraries, you 
-                              can add them using this parameters: one path per 
-                              cell entry.
+- **Libs** [default: {}]:       If your program uses additional libraries, you 
+                                can add them using this parameters: one path per 
+                                cell entry.
                               
-- 'Memory' [default: 0]:      When running jobs on the cluster you should
-                              specify the amount of memory they need in Mb. They
-                              will be allowed to use additional memory (up to
-                              1.8Gb on Meleze, 1.2Gb on Sequoia) but will be 
-                              killed if they go beyond this limit. Please also 
-                              make sure you do not request a lot more memory 
-                              than you need because it will prevent other users 
-                              to use free slots. If 'Memory' is null, it is set 
-                              to the default value of 2Gb for Meleze and 3.8Gb 
-                              for Sequoia.
+- **Memory** [default: 0]:      When running jobs on the cluster you should
+                                specify the amount of memory they need in Mb. They
+                                will be allowed to use additional memory (up to
+                                1.8Gb on Meleze, 1.2Gb on Sequoia) but will be 
+                                killed if they go beyond this limit. Please also 
+                                make sure you do not request a lot more memory 
+                                than you need because it will prevent other users 
+                                to use free slots. If 'Memory' is null, it is set 
+                                to the default value of 2Gb for Meleze and 3.8Gb 
+                                for Sequoia.
                               
-- 'NJobs' [default: 0]:       If non-zero, 'APT_run' will divide your function
-                              calls across 'NJobs' jobs on the cluster (or
-                              'NJobs' instances of Matlab if you are running
-                              on your local machine). If null, 'APT_run' will
-                              run one job per argument set (or 
-                              as many Matlab instances as your machine's core 
-                              number if you are running on local).
+- **NJobs** [default: 0]:       If non-zero, 'APT_run' will divide your function
+                                calls across 'NJobs' jobs on the cluster (or
+                                'NJobs' instances of Matlab if you are running
+                                on your local machine). If null, 'APT_run' will
+                                run one job per argument set (or 
+                                as many Matlab instances as your machine's core 
+                                number if you are running on local).
                               
-- 'NoJVM' [default: 1]:       Remove the use of JVM if non zero (jobs load 
-            faster and use less memory).
+- **NoJVM** [default: 1]:       Remove the use of JVM if non zero (jobs load 
+                                faster and use less memory).
                               
-- 'NoLoad' [default: 0]:      If non-zero: the return values of the function are
-                              not loaded. See section 'Postponing the loading of 
-                              results' to see how it can be used.
+- **NoLoad** [default: 0]:      If non-zero: the return values of the function are
+                                not loaded. See section 'Postponing the loading of 
+                                results' to see how it can be used.
 
-- 'NSlots' [default: 1]:      If your program uses multi-threading, use this
-                              parameter to request the proper number of slots.
+- **NSlots** [default: 1]:      If your program uses multi-threading, use this
+                                parameter to request the proper number of slots.
                               
-- 'ResumeType' [default: 0]:  Use 'ResumeType' when you resume a task, see 
-                              section "Interacting with jobs": Relaunching task.
-                              If 'ResumeType' is 0 it will re-launch only the 
-                              jobs which failed, if it is 1 it will re-launch 
-                              all the non-terminated jobs.     
+- **ResumeType** [default: 0]:  Use 'ResumeType' when you resume a task, see 
+                                section "Interacting with jobs": Relaunching task.
+                                If 'ResumeType' is 0 it will re-launch only the 
+                                jobs which failed, if it is 1 it will re-launch 
+                                all the non-terminated jobs.     
 
-- 'ShellVar' [default: {}]:   Use 'ShellVar' to initialize shell variables 
-                              before launching your script. It should be a cell
-                              of cells containing two strings in the form:
-                              {'variable' 'value'}. For example:
-                              APT_run(...,'ShellVar',{{'foo' '1'}{'bar' '2'}});
+- **ShellVar** [default: {}]:   Use 'ShellVar' to initialize shell variables 
+                                before launching your script. It should be a cell
+                                of cells containing two strings in the form:
+                                {'variable' 'value'}. For example:
+                                APT_run(...,'ShellVar',{{'foo' '1'}{'bar' '2'}});
 
-- 'TimeOut' [default: 0]:     If non-zero: wait termination during 'TimeOut'
-                              seconds before returning.
+- **TimeOut** [default: 0]:     If non-zero: wait termination during 'TimeOut'
+                                seconds before returning.
                               
-- 'UseCluster' [default: 1]:  Set it to 0 to run your code on your local 
-                              machine. It will launch several instances of
-                              Matlab and distribute your function calls among
-                              them. You don't need to compile your code in that
-                              case. If non-zero, 'APT_run' will launch your
-                              function on the cluster.                              
+- **UseCluster** [default: 1]:  Set it to 0 to run your code on your local 
+                                machine. It will launch several instances of
+                                Matlab and distribute your function calls among
+                                them. You don't need to compile your code in that
+                                case. If non-zero, 'APT_run' will launch your
+                                function on the cluster.                              
                               
-- 'Verbose' [default: ?]:     Set verbosity level : 0 (quiet), 1 or 2 (maximum 
-                              verbosity). Default value is set by APT_params.m.   
+- **Verbose** [default: ?]:     Set verbosity level : 0 (quiet), 1 or 2 (maximum 
+                                verbosity). Default value is set by APT_params.m.   
                               
-- 'WaitEnd' [default: 1]:     The call to APT_run is non-blocking if zero and 
-                              blocking otherwise. When APT_run is non-blocking,
-                              it returns two arguments [tID, done]. First 
-                              argument is the task ID needed to resume the task, 
-                              second argument is 2 if at least a job crashed, 1 
-                              if all jobs are finished and 0 otherwise.
+- **WaitEnd** [default: 1]:     The call to APT_run is non-blocking if zero and 
+                                blocking otherwise. When APT_run is non-blocking,
+                                it returns two arguments [tID, done]. First 
+                                argument is the task ID needed to resume the task, 
+                                second argument is 2 if at least a job crashed, 1 
+                                if all jobs are finished and 0 otherwise.
                              
                               
 <a name="compilation"></a>
@@ -518,54 +518,54 @@ APT Configuration
 Among the 'APT_run' options, you can set the Awesome Parallel Toolbox default 
 settings in the file APT_params.m:
 
-- login:         This is the SSH login you use to connect on the cluster.
+- **login**:          This is the SSH login you use to connect on the cluster.
 
                  
-- temp_drive:    The path to the drive where 'APT_run' will generate temporary 
-                 files to save function arguments and return values. See 
-                 'temp_dir' below.
+- **temp_drive**:     The path to the drive where 'APT_run' will generate temporary 
+                      files to save function arguments and return values. See 
+                      'temp_dir' below.
 
-- temp_dir:      'APT_run' will generate temporary files to save function 
-                 arguments and return values in this directory. Each call to 
-                 'APT_run' generates a unique task ID and the directory 
-                 \<temp_drive\>/\<temp_dir\>/\<taskID\> (denoted below as <taskRoot>)
-                 is created. Arguments are stored in <taskRoot>/args, return 
-                 values in <taskRoot>/res and log reports in <taskRoot>/logs. If
-                 all the jobs terminate successfully, <taskRoot> is deleted. In 
-                 case of errors (for example if you did not request enough 
-                 memory), you can correct them and relaunch the task (see 
-                 section "Interacting with jobs"). Check \<temp_drive\>/\<temp_dir\>
-                 from time to time to delete old task directories which were not
-                 removed because of crashed jobs.
+- **temp_dir**:       'APT_run' will generate temporary files to save function 
+                      arguments and return values in this directory. Each call to 
+                      'APT_run' generates a unique task ID and the directory 
+                      \<temp_drive\>/\<temp_dir\>/\<taskID\> (denoted below as <taskRoot>)
+                      is created. Arguments are stored in <taskRoot>/args, return 
+                      values in <taskRoot>/res and log reports in <taskRoot>/logs. If
+                      all the jobs terminate successfully, <taskRoot> is deleted. In 
+                      case of errors (for example if you did not request enough 
+                      memory), you can correct them and relaunch the task (see 
+                      section "Interacting with jobs"). Check \<temp_drive\>/\<temp_dir\>
+                      from time to time to delete old task directories which were not
+                      removed because of crashed jobs.
                  
-- exec_name:     The name for the binary produced by mcc. You can change it 
-                 dynamically if you have different projects: by also changing 
-                 your path appropriatly you can make compilation faster.
+- **exec_name**:      The name for the binary produced by mcc. You can change it 
+                      dynamically if you have different projects: by also changing 
+                      your path appropriatly you can make compilation faster.
 
-- loc_dir:       This is a directory located on the local node (or computer if 
-                 you run on your machine) in /local/<your_login>. This 
-                 directory is designed to store temporary files for the running 
-                 task. Each function call has its own directory so that the 
-                 files do not mix up between tasks. This directory is deleted 
-                 when the function returns or fail.                            
+- **loc_dir**:        This is a directory located on the local node (or computer if 
+                      you run on your machine) in /local/<your_login>. This 
+                      directory is designed to store temporary files for the running 
+                      task. Each function call has its own directory so that the 
+                      files do not mix up between tasks. This directory is deleted 
+                      when the function returns or fail.                            
 
-- cluster_id:    If non-zero, this will force the use of the designated cluster:
-                 1 for Meleze, 2 for Sequoia.
+- **cluster_id**:     If non-zero, this will force the use of the designated cluster:
+                      1 for Meleze, 2 for Sequoia.
 
-- host_name:     Specify nodes to use on the cluster. Be sure to also specify
-                 the cluster ID. See option 'HostName' for more details.    
+- **host_name**:      Specify nodes to use on the cluster. Be sure to also specify
+                      the cluster ID. See option 'HostName' for more details.    
                  
-- force_local:   If non-zero, this will force the use of local computer.
+- **force_local**:    If non-zero, this will force the use of local computer.
               
-- verbose:       Verbosity level: 0 (quiet), 1 or 2 (maximum verbosity).
+- **verbose**:        Verbosity level: 0 (quiet), 1 or 2 (maximum verbosity).
 
-- default_libs:  If your program always uses additional libraries, you can add
-                 them using this setting: one path per cell entry. Those 
-                 libraries will be added to the ones you pass using the 
-                 APT_run 'Library' option.
+- **default_libs**:   If your program always uses additional libraries, you can add
+                      them using this setting: one path per cell entry. Those 
+                      libraries will be added to the ones you pass using the 
+                      APT_run 'Library' option.
 
-- numcores:      Default number of cores used when running on your local 
-                 machine. If null it will use all your cores.           
+- **numcores**:       Default number of cores used when running on your local 
+                      machine. If null it will use all your cores.           
 
 
 <a name="versions"></a>
