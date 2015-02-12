@@ -52,37 +52,37 @@ To install the Awesome Parallel Toolbox simply follow the following steps :
 1. Add the toolbox directory to your Matlab path.
 
 2. Export your SSH key to the clusters so that you don't need to login with a 
-password. To do so, you should first install a SSH client:
+  password. To do so, you should first install a SSH client:
 
-```
-sudo apt-get install openssh-client
-```
+  ```
+  sudo apt-get install openssh-client
+  ```
 
-You should also generate your private/public keys if you haven't done it 
-already:
+  You should also generate your private/public keys if you haven't done it 
+  already:
 
-```
-$ ssh-keygen -t dsa -b 1024
-```
+  ```
+  $ ssh-keygen -t dsa -b 1024
+  ```
 
-Use the default file to store the key and leave the passphrase empty.
-Finally you have to copy your SSH public key on the clusters:
+  Use the default file to store the key and leave the passphrase empty.
+  Finally you have to copy your SSH public key on the clusters:
 
-``` 
-$ ssh-copy-id -i ~/.ssh/id_dsa.pub meleze
-$ ssh-copy-id -i ~/.ssh/id_dsa.pub sequoia
-```
+  ``` 
+  $ ssh-copy-id -i ~/.ssh/id_dsa.pub meleze
+  $ ssh-copy-id -i ~/.ssh/id_dsa.pub sequoia
+  ```
 
-Enter you SSH password each time you are asked.
+  Enter you SSH password each time you are asked.
 
 3. Make sure your .bashrc on Meleze and Sequoia contains the following lines:
 
-```
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-  . /etc/bashrc
-fi
-```
+  ```
+  # Source global definitions
+  if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+  fi
+  ```
    
 
 <a name="quickstart"></a>
