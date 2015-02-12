@@ -93,9 +93,9 @@ Before using the Awesome Parallel Toolbox for running code on the clusters, you
 should compile your Matlab code by calling 'APT_compile' from Matlab. Setup your
 Matlab path so that all the code you need is accessible and call:
 
-  ```
-  >> APT_compile
-  ```
+```
+>> APT_compile
+```
 
 It will package all the .m and .mex files into a stand-alone binary located in 
 <APT_PARAMS.temp_dir> (see 'temp_dir' in section "APT configuration"). 
@@ -105,19 +105,19 @@ You don't need to compile if you run your code on your local machine.
 Once compilation is complete, you can launch any function in parallel on the 
 cluster. For example, let's suppose you have the following function 'foo':
 
-  ```
-  >> function [u v] = foo(a, b, c)
-  >>     u = a + b + c;
-  >>     v = a * b * c;
-  >> end
-  ```
+```
+>> function [u v] = foo(a, b, c)
+>>     u = a + b + c;
+>>     v = a * b * c;
+>> end
+```
 
 If you want to compute 'foo(1, 3, 4)', 'foo(2, 3, 5)' and 'foo(8, 3, 0)' then
 simply do:
 
-  ```
-  >> [u v] = APT_run('foo', [1 2 8], {3}, [4 5 0]);
-  ```
+```
+>> [u v] = APT_run('foo', [1 2 8], {3}, [4 5 0]);
+```
 
 You will get u = {8; 10; 11} and v = {12; 30; 0}. More generally you can launch 
 any function on a set of N arguments. If an argument is the same for all 
@@ -332,16 +332,16 @@ Job information at runtime
 
 You have access to a global structure named JOB_INFO which has the following
 fields:
-- JOB_INFO.cluster_id:   0 if the function is running on local machine,    
+- *JOB_INFO.cluster_id*:   0 if the function is running on local machine,    
                          1 if it is running on Meleze and 2 for Sequoia.
                          
-- JOB_INFO.user_dir:     This is a directory located on the local node 
+- **JOB_INFO.user_dir**:     This is a directory located on the local node 
                          (or computer if you run on your machine). This
                          directory is designed to store temporary files for 
                          the running task. Each task has its own directory so 
                          that the files do not mix up between tasks.
                          
-- JOB_INFO.job_id:       This is the current parameter set number: 'job_id' is 
+- **JOB_INFO.job_id**:       This is the current parameter set number: 'job_id' is 
                          between 1 and N where N is the number of different
                          parameter sets.   
                                                         
