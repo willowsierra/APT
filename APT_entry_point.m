@@ -12,6 +12,7 @@ function APT_entry_point(task_id, job_id, fun, clusterID)
     
         res_file_tmp = fullfile(res_dir, sprintf('res_%s.mat', job_id));
         res_file     = fullfile(res_dir, sprintf('res%s.mat', job_id));        
+        res_file_err = fullfile(res_dir, sprintf('res%s_err.mat', job_id));
     catch E        
         fprintf('Critical error: %s\n', E.message);
         print_error(E);
@@ -75,12 +76,42 @@ function APT_entry_point(task_id, job_id, fun, clusterID)
                                                                     
         fprintf('Log file for task %s, job %s\n', task_id, job_id); 
         
-        t1 = clock;    
-        res = cell(ninst, 1);
-                   
-        E = []; % no error for now
-        errorJobID = 0;
-        for i = 1 : ninst            
+        t1 = clock;
+
+        if exist(res_file_err, 'file')
+            previous_res = load(res_file_err);
+            delete(res_file_err);
+        else
+            previous_res = [];
+        end
+
+        if isfield(previous_res, 'res') && numel(previous_res.res) == ninst
+            res = previous_res.res;
+        else
+            res = cell(ninst, 1);
+        end
+
+        if isfield(previous_res, 'time')
+            previous_time = previous_res.time;
+        else
+            previous_time = 0;
+        end
+
+        if isfield(previous_res, 'errorInstances')
+            rerunInstances = previous_res.errorInstances;
+        else
+            rerunInstances = [];
+        end
+            rerunInstances
+
+        E = {}; % no error for now
+        errorJobIDs = [];
+        clear previous_res;
+        for i = 1 : ninst
+            if ~isempty(rerunInstances) && isempty(find(rerunInstances == jobIDs(i)))
+                fprintf('*** Skipping execution of ''%s'' for parameter set #%d as it was previously run ***\n', fun, jobIDs(i));
+                continue;
+            end
             JOB_INFO.job_id   = jobIDs(i);
             JOB_INFO.user_dir = fullfile('/local', APT_PARAMS.login, APT_PARAMS.loc_dir, sprintf('%s_%d', task_id, JOB_INFO.job_id));
             [s,m] = mkdir(JOB_INFO.user_dir);              
@@ -120,10 +151,8 @@ function APT_entry_point(task_id, job_id, fun, clusterID)
             catch tmpE
                 fprintf('Error for parameter set #%d: %s\n', jobIDs(i), tmpE.message);
                 print_error(tmpE);
-                if isempty(E)
-                    E = tmpE;
-                    errorJobID = jobIDs(i);
-                end
+                E{end+1} = tmpE;
+                errorJobIDs(end+1) = jobIDs(i);
             end
             
             % remove local temporary files
@@ -134,22 +163,23 @@ function APT_entry_point(task_id, job_id, fun, clusterID)
         end
         
         if ~isempty(E)
-            fprintf('Error for parameter set #%d: %s\n', errorJobID, E.message);
-            print_error(E);
-            
-            save(res_file_tmp, 'E');
-        else
-            E = [];
-            res = cat(1, res{:});
-            t2 = clock;
-            time = etime(t2, t1);  
-            [memUsedMb mem] = APT_memory_usage();
-            info = whos('res');
-            if info.bytes >= 2000000000
-                save(res_file_tmp, 'E', 'res', 'time', 'mem', '-v7.3');
-            else
-                save(res_file_tmp, 'E', 'res', 'time', 'mem');                    
+            for err_i = 1:numel(E)
+                fprintf('Error for parameter set #%d: %s\n', errorJobIDs(err_i), E{err_i}.message);
+                print_error(E{err_i});
             end
+        end
+        errorInstances = errorJobIDs;
+        if isempty(E)
+            res = cat(1, res{:});
+        end
+        t2 = clock;
+        time = etime(t2, t1) + previous_time;
+        [memUsedMb mem] = APT_memory_usage();
+        info = whos('res');
+        if info.bytes >= 2000000000
+            save(res_file_tmp, 'E', 'errorInstances', 'res', 'time', 'mem', '-v7.3');
+        else
+            save(res_file_tmp, 'E', 'errorInstances', 'res', 'time', 'mem');
         end
     catch E        
         fprintf('Critical error: %s\n', E.message);
@@ -160,12 +190,12 @@ function APT_entry_point(task_id, job_id, fun, clusterID)
         try
             rmdir(JOB_INFO.user_dir, 's');
         catch 
-        end        
+        end
     end  
     
     while(1)
         try
-            [s, r] = system(sprintf('mv %s %s', res_file_tmp, res_file));
+            movefile(res_file_tmp, res_file);
             % Sometimes the movefile has no effect
             if exist(res_file, 'file') == 2
                 break;

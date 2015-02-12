@@ -804,11 +804,11 @@ function dirs = path2cell()
 end
 
 %==========================================================================
-function [jobs_info errors] = update_jobs_info(params, jobs_info, remove_errors)
+function [jobs_info errors] = update_jobs_info(params, jobs_info, move_errors)
     global APT_PARAMS;
     
     if nargin < 3
-        remove_errors = 0;
+        move_errors = 0;
     end
 
     try
@@ -824,14 +824,15 @@ function [jobs_info errors] = update_jobs_info(params, jobs_info, remove_errors)
     for i = 1 : params.NJobs        
         if ~jobs_info(i).finished
             file = fullfile(res_dir, sprintf('res%d.mat', i));
+            file_err = fullfile(res_dir, sprintf('res%d_err.mat', i));
             if exist(file, 'file') == 2                
                 try
                     load(file, 'E'); % load args, time and E eventually                    
                 catch E
                 end
                 if exist('E', 'var') == 1 && ~isempty(E)
-                    if remove_errors                        
-                        delete(file);
+                    if move_errors
+                        movefile(file, file_err);
                         try
                             [s,m] = system(sprintf('rm -f %s', fullfile(sh_dir, sprintf('launched%d', i))));
                         catch
@@ -860,8 +861,8 @@ function [jobs_info errors] = update_jobs_info(params, jobs_info, remove_errors)
                             jobs_info(i).mem = [];
                         end
                     catch E  % when files are corrupted, some variables may be missing
-                        if remove_errors                        
-                            delete(file);
+                        if move_errors
+                            movefile(file, file_err);
                             try
                                 [s,m] = system(sprintf('rm -f %s', fullfile(sh_dir, sprintf('launched%d', i))));
                             catch
@@ -949,6 +950,8 @@ end
 
 %==========================================================================
 function msg = make_error_msg(E)
+    % Select first error
+    E = E{1};
     msg = sprintf('%s\n', E.message);
     for i=1:length(E.stack)
         msg = [msg sprintf('In ==> %s at %d\n', E.stack(i).name, E.stack(i).line)];
