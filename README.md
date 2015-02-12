@@ -8,26 +8,25 @@ If you have any comment or suggestion please email vincent.delaitre@ens.fr
 Table of Contents
 =================
 
-- When should the Awesome Parallel Toolbox be used ?
-- Installation
-- Quick start
-- Examples and tricks
-- Distributing APT
-- Optional parameters
-- Compilation options
-- APT configuration
-- Interacting with jobs
+- <a href="#specific">Have a specific need ?</a>
+- <a name="#install">Installation</a>
+- <a name="#quickstart">Quick start</a>
+- <a name="#examples">Examples and tricks</a>
+- <a name="#params">Optional parameters</a>
+- <a name="#compilation">Compilation options</a>
+- <a name="#config">APT configuration</a>
+- <a name="#versions">Version information</a>
 
 
-Have a specific need ?
-======================
+<a name="specific">Have a specific need ?</a>
+=============================================
 
 APT is like iPhone: there's an option for everything. Please check sections 
 "Optional parameters" and "Compilation options" for a comprehensive list of 
 options. 
 
 Please also refer to section "Examples and tricks" for the following topics:
-- Looking at errors
+- <a name="ex_errors">Looking at errors</a>
 - Setting the maximum number of jobs
 - Getting rid of the braces for constant arguments
 - Cross-validation
@@ -43,14 +42,14 @@ Please also refer to section "Examples and tricks" for the following topics:
 - Making Coffee
 
 
-Installation
-============
+<a name="install">Installation</a>
+===================================
 
 To install the Awesome Parallel Toolbox simply follow the following steps :
 
-1) Add the toolbox directory to your Matlab path.
+1. Add the toolbox directory to your Matlab path.
 
-2) Export your SSH key to the clusters so that you don't need to login with a 
+2. Export your SSH key to the clusters so that you don't need to login with a 
    password. To do so, you should first install a SSH client:
 	 
    ->  sudo apt-get install openssh-client
@@ -68,7 +67,7 @@ To install the Awesome Parallel Toolbox simply follow the following steps :
 	 
    Enter you SSH password each time you are asked.
 
-3) Make sure your .bashrc on Meleze and Sequoia contains the following lines:
+3. Make sure your .bashrc on Meleze and Sequoia contains the following lines:
 
     # Source global definitions
     if [ -f /etc/bashrc ]; then
@@ -76,8 +75,8 @@ To install the Awesome Parallel Toolbox simply follow the following steps :
     fi
 	 
 
-Quick start
-===========
+<a name="quickstart">Quick start</a>
+====================================
 
 Before using the Awesome Parallel Toolbox for running code on the clusters, you 
 should compile your Matlab code by calling 'APT_compile' from Matlab. Setup your
@@ -112,11 +111,11 @@ rows. Each row will be distributed to its corresponding function call. The
 output of APT_run will be a cell with N rows containing the return parameters of
 each function calls.
 
-Examples and tricks
-===================
+<a name="examples">Examples and tricks</a>
+==========================================
 
-Looking at errors
------------------
+<a name="ex_errors">Looking at errors</a>
+-----------------------------------------
  
   Here <temp_drive> and <temp_dir> refer to the value defined in APT_params.m
   <taskID> is the number displayed when calling APT_run.
@@ -320,8 +319,8 @@ Making coffee
 >> APT_run([], 'Coffee', 1);
 
 	
-Optional parameters
-===================
+<a name="params">Optional parameters</a>
+========================================
 
 The 'APT_run' function has additional optional parameters that you can use in
 the traditional Matlab property/value scheme. For example to run 'foo' on local 
@@ -432,8 +431,8 @@ The available options are:
                               if all jobs are finished and 0 otherwise.
                              
                               
-Compilation options
-===================
+<a name="compilation">Compilation options</a>
+=============================================
 
 Compilation may take some time. However you can make it faster by compiling only
 few target functions. It won't be possible to run other functions in parallel 
@@ -457,8 +456,8 @@ limitation use:
   >> APT_compile(..., 'NoJVM', 0);
           
 	
-APT Configuration
-=================
+<a name="config">APT Configuration</a>
+==========================================
 
 Among the 'APT_run' options, you can set the Awesome Parallel Toolbox default 
 settings in the file APT_params.m:
@@ -513,8 +512,8 @@ settings in the file APT_params.m:
                  machine. If null it will use all your cores.           
 
 
-Version informations
-====================
+<a name="versions">Version information</a>
+===========================================
 
 APT 1.4:
    - APT_globals.m was removed.
