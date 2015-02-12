@@ -136,9 +136,9 @@ Examples and tricks
 Looking at errors
 -----------------
 
-Here \<temp_drive\> and <temp_dir> refer to the value defined in APT_params.m
-<taskID> is the number displayed when calling APT_run.
-The directory '<temp_drive>/$USER/<temp_dir>/<taskID>/logs'
+Here \<temp_drive\> and \<temp_dir\> refer to the value defined in APT_params.m
+\<taskID\> is the number displayed when calling APT_run.
+The directory '\<temp_drive\>/$USER/\<temp_dir\>/\<taskID\>/logs'
 contains the output for each jobs. Each report is named 'report_xxx.txt' 
 where 'xxx' is the job number (or Matlab instance number if you are running on
 local machine). You can use the function APT_show_report to easily visualize a
@@ -148,7 +148,7 @@ report:
 >> APT_show_report(taskID, jobID);
 ```
 
-A script is also available in <temp_drive>/$USER/<temp_dir>.
+A script is also available in \<temp_drive\>/$USER/\<temp_dir\>.
     
 <a name="ex_maxjobs"></a> 
 Setting the maximum number of jobs
@@ -166,8 +166,8 @@ Called with no argument, it will print the current job limit. Otherwise,
 not set, it changes the limit for Meleze and Sequoia. If cluster_id is 1 or 2
 it changes the limit only for Meleze or Sequoia respectively.  
 
-A script is also available in <temp_drive>/$USER/<temp_dir>.
-Here <temp_drive> and <temp_dir> refer to the value defined in APT_params.m
+A script is also available in \<temp_drive\>/$USER/\<temp_dir\>.
+Here \<temp_drive\> and \<temp_dir\> refer to the value defined in APT_params.m
   
 <a name="ex_braces"></a>
 Getting rid of the braces for constant arguments
@@ -307,16 +307,16 @@ of the non-terminated jobs use the function APT_missing_jobs:
 >> APT_missing_jobs(taskID);  % taskID is displayed by 'APT_run'
 ```
 
-A script is also available in <temp_drive>/$USER/<temp_dir>.
-Here <temp_drive> and <temp_dir> refer to the value defined in APT_params.m
+A script is also available in \<temp_drive\>/$USER/\<temp_dir\>.
+Here \<temp_drive\> and \<temp_dir\> refer to the value defined in APT_params.m
   
 <a name="ex_cleaning"></a>
 Cleaning temporary files
 ------------------------
 
-Here <temp_drive> and <temp_dir> refer to the value defined in APT_params.m
+Here \<temp_drive\> and \<temp_dir\> refer to the value defined in APT_params.m
 The temporary files associated with the tasks which fail or are launched with 
-the 'KeepTmp' option stay in <temp_drive>/$USER/<temp_dir>. If you don't need to 
+the 'KeepTmp' option stay in \<temp_drive\>/$USER/\<temp_dir\>. If you don't need to 
 relaunch or inspect those tasks you can clean the temporary files by using the 
 function APT_remove:
 
@@ -324,7 +324,7 @@ function APT_remove:
 >> APT_remove()
 ```
 
-A script is also available in <temp_drive>/$USER/<temp_dir>.
+A script is also available in \<temp_drive\>/$USER/\<temp_dir\>.
 
 <a name="ex_info"></a>
 Job information at runtime
@@ -406,7 +406,7 @@ The available options are:
                               on any node.
                               
 - 'KeepTmp' [default: 0]:     If non-zero: do not erase the temporary directory 
-                              <temp_drive>/<temp_dir>/<taskID> containing the 
+                              \<temp_drive\>/\<temp_dir\>/\<taskID\> containing the 
                               .mat results files after the task is completed. It
                               is particulary useful to debug when used in 
                               combination with the 're-launch feature': see 
@@ -528,13 +528,13 @@ settings in the file APT_params.m:
 - temp_dir:      'APT_run' will generate temporary files to save function 
                  arguments and return values in this directory. Each call to 
                  'APT_run' generates a unique task ID and the directory 
-                 <temp_drive>/<temp_dir>/<taskID> (denoted below as <taskRoot>)
+                 \<temp_drive\>/\<temp_dir\>/\<taskID\> (denoted below as <taskRoot>)
                  is created. Arguments are stored in <taskRoot>/args, return 
                  values in <taskRoot>/res and log reports in <taskRoot>/logs. If
                  all the jobs terminate successfully, <taskRoot> is deleted. In 
                  case of errors (for example if you did not request enough 
                  memory), you can correct them and relaunch the task (see 
-                 section "Interacting with jobs"). Check <temp_drive>/<temp_dir>
+                 section "Interacting with jobs"). Check \<temp_drive\>/\<temp_dir\>
                  from time to time to delete old task directories which were not
                  removed because of crashed jobs.
                  
