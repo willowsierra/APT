@@ -80,12 +80,17 @@ function APT_compile(varargin)
     if params.SingleThread
         fprintf('Use APT_compile(''SingleThread'', 0) to compile with multi-threading\n');
         flags = [flags '-R -singleCompThread '];
-    end    
+    end
+
+    path_cell = get_non_builtin_path_cell();
+    path_infos = sprintf(' -I ''%s''', path_cell{:});
+
     fprintf('Compiling, it may take some time...\n');
-    cmd = ['mcc -m -R -nodisplay ' flags '-d ' temp_dir ' -o _' APT_PARAMS.exec_name src_path ' ' APT_PARAMS.main_func];
-    eval(cmd);   
-    movefile(fullfile(temp_dir, ['_' APT_PARAMS.exec_name]), fullfile(temp_dir, APT_PARAMS.exec_name));      
-        
+
+    cmd = [matlabroot '/bin/mcc -m -R -nodisplay ' flags path_infos ' -d ' temp_dir ' -o _' APT_PARAMS.exec_name src_path ' ' APT_PARAMS.main_func];
+    system(cmd);
+    movefile(fullfile(temp_dir, ['_' APT_PARAMS.exec_name]), fullfile(temp_dir, APT_PARAMS.exec_name));
+
     fid = fopen(fullfile(temp_dir, [APT_PARAMS.exec_name '.inf']), 'wt');
     fprintf(fid, 'flags="%s";\n', flags);
     fprintf(fid, 'funs="%s";\n', sprintf('%s ', fun_names{:}));
