@@ -9,13 +9,13 @@ Table of Contents
 =================
 
 - <a href="#specific">Have a specific need ?</a>
-- <a name="#install">Installation</a>
-- <a name="#quickstart">Quick start</a>
-- <a name="#examples">Examples and tricks</a>
-- <a name="#params">Optional parameters</a>
-- <a name="#compilation">Compilation options</a>
-- <a name="#config">APT configuration</a>
-- <a name="#versions">Version information</a>
+- <a href="#install">Installation</a>
+- <a href="#quickstart">Quick start</a>
+- <a href="#examples">Examples and tricks</a>
+- <a href="#params">Optional parameters</a>
+- <a href="#compilation">Compilation options</a>
+- <a href="#config">APT configuration</a>
+- <a href="#versions">Version information</a>
 
 
 <a name="specific">Have a specific need ?</a>
@@ -26,7 +26,7 @@ APT is like iPhone: there's an option for everything. Please check sections
 options. 
 
 Please also refer to section "Examples and tricks" for the following topics:
-- <a name="ex_errors">Looking at errors</a>
+- <a href="ex_errors">Looking at errors</a>
 - Setting the maximum number of jobs
 - Getting rid of the braces for constant arguments
 - Cross-validation
@@ -42,8 +42,9 @@ Please also refer to section "Examples and tricks" for the following topics:
 - Making Coffee
 
 
-<a name="install">Installation</a>
-===================================
+<a name="install"></a>
+Installation
+============
 
 To install the Awesome Parallel Toolbox simply follow the following steps :
 
