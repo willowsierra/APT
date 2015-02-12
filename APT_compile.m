@@ -3,15 +3,15 @@ function APT_compile(varargin)
     if isempty(APT_PARAMS)
         APT_params();
     end
-    
+
     %======================================================================
-    
+
     params = struct('NoJVM', 1, ...
                     'SingleThread', 1, ...
                     'Ignore', {{}});
-                
+
     %======================================================================
-    
+
     fun_names = {};
     i = 1;
     while i <= length(varargin)
@@ -25,12 +25,12 @@ function APT_compile(varargin)
                 i = i + 2;
                 continue;
             else
-                if strcmp(which(varargin{i}), '') 
+                if strcmp(which(varargin{i}), '')
                     error('Arguments should function names or options, unable to find: %s ', varargin{i});
                 else
                     fun_names = [fun_names {varargin{i}}];
                 end
-            end                
+            end
         else
             error('Arguments should function names or options.');
         end
@@ -44,7 +44,7 @@ function APT_compile(varargin)
         fun_names = {};
     elseif iscell(fun_names)
         for i = 1 : length(fun_names)
-            if ~ischar(fun_names{i})                
+            if ~ischar(fun_names{i})
                 error('First argument should be a cell of strings or a string.');
             end
         end
@@ -60,18 +60,19 @@ function APT_compile(varargin)
             fun_names{i} = fun_names{i}(1:end-2);
         end
     end
-        
+
     drive = APT_get_drive();
     temp_dir = fullfile(drive, APT_PARAMS.temp_dir);
     [s,m] = mkdir(temp_dir);
-                
-    % Compiling  
+
+    % Compiling
     if isempty(fun_names)
         src_path = get_src_path(params.Ignore);
-        src_path = sprintf(' -a %s', src_path{:});  
+        src_path = sprintf(' -a ''%s''', src_path{:});
     else
-        src_path = sprintf(' -a %s', fun_names{:});        
-    end    
+        src_path = sprintf(' -a ''%s''', fun_names{:});
+    end
+
     flags = '';
     if params.NoJVM
         fprintf('Use APT_compile(''NoJVM'', 0) to compile with the JVM\n');
@@ -95,30 +96,30 @@ function APT_compile(varargin)
     fprintf(fid, 'flags="%s";\n', flags);
     fprintf(fid, 'funs="%s";\n', sprintf('%s ', fun_names{:}));
     fclose(fid);
-  
+
     % Overwriting matlab runner
-    generate_runner();             
-    
+    generate_runner();
+
     % Cleaning
     system(sprintf('rm %s %s %s %s', fullfile(temp_dir, '*.c'), ...
                                      fullfile(temp_dir, '*.prj'), ...
                                      fullfile(temp_dir, '*.txt'), ...
                                      fullfile(temp_dir, '*.log')));
-    
+
     fprintf('Compilation finished successfully.\n');
 end
 
 %==========================================================================
 function generate_runner()
-    global APT_PARAMS; 
-    
-%     runner_orig = fullfile(drive, APT_PARAMS.temp_dir, ['run__' APT_PARAMS.exec_name '.sh']); 
-%     runner = fullfile(drive, APT_PARAMS.temp_dir, ['run_' APT_PARAMS.exec_name '.sh']); 
+    global APT_PARAMS;
+
+%     runner_orig = fullfile(drive, APT_PARAMS.temp_dir, ['run__' APT_PARAMS.exec_name '.sh']);
+%     runner = fullfile(drive, APT_PARAMS.temp_dir, ['run_' APT_PARAMS.exec_name '.sh']);
 %     system(sprintf('sed "/echo LD_LIBRARY_PATH/d;/\$\*/d;s|shift 1|LD_LIBRARY_PATH=\${LD_LIBRARY_PATH}:\$2\nexport LD_LIBRARY_PATH;\necho LD_LIBRARY_PATH is \${LD_LIBRARY_PATH};\nshift 2\necho \"\" > \${exe_dir}/\$1/scripts/launched\$2\n\${exe_dir}/%s \"\$1\" \"\$2\" \"\$3\" \"\$4\"|" %s > %s', APT_PARAMS.exec_name, runner_orig, runner));
-    
+
     drive = APT_get_drive();
-    runner = fullfile(drive, APT_PARAMS.temp_dir, ['run_' APT_PARAMS.exec_name '.sh']);    
-    fid=fopen(runner,'w');  
+    runner = fullfile(drive, APT_PARAMS.temp_dir, ['run_' APT_PARAMS.exec_name '.sh']);
+    fid=fopen(runner,'w');
     fprintf(fid, '#!/bin/sh\n');
     fprintf(fid, '# script for execution of deployed applications\n');
     fprintf(fid, '#\n');
@@ -160,17 +161,17 @@ function generate_runner()
     fprintf(fid, '  echo "" > ${exe_dir}/$1/scripts/launched$2\n');
     fprintf(fid, '  ${exe_dir}/%s "$1" "$2" "$3" "$4"\n', APT_PARAMS.exec_name);
     fprintf(fid, 'fi\n');
-    fprintf(fid, 'exit\n'); 
+    fprintf(fid, 'exit\n');
 end
 
 %==========================================================================
-function src_path = get_src_path(ignore)    
+function src_path = get_src_path(ignore)
     src_path = find_user_paths(ignore);
 
     if isempty(find(strcmp(src_path, cd()), 1))
         src_path = [cd() src_path];
     end
-    
+
     src_path = repmat(reshape(src_path, 1, numel(src_path)), 2, 1);
     for i = 1 : size(src_path, 2)
         src_path{1, i} = fullfile(src_path{1, i}, '*.m');
@@ -186,7 +187,7 @@ function dirs = find_user_paths(ignore)
     dirs = path2cell();
     n_dirs = length(dirs);
     ignore{end + 1} = matlabroot;
-    
+
     select = true(n_dirs, 1);
     for i = 1 : n_dirs
         for j = 1 : length(ignore)
