@@ -55,6 +55,12 @@ function varargout = APT_run(task, varargin)
                 error('Argument %d should be at most 2-dimensional.', i+1);
             end 
             if ~iscell(varargin{i})
+                % Transform argument into a cell array we can pass to jobs
+                % Each line of the argument will become a cell item
+                % If argument is a line vector, let's assume it's a vector and transpose it
+                if length(varargin{i}) == numel(varargin{i}) && size(varargin{i}, 1) == 1
+                    varargin{i} = transpose(varargin{i});
+                end
                 n_args = size(varargin{i}, 1);
                 args = cell(n_args, 1);
                 for j = 1 : n_args
