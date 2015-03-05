@@ -14,6 +14,7 @@ function varargout = APT_run(task, varargin)
                     'KeepTmp', [], ...                    
                     'Libs', {{}}, ...
                     'Memory', 0, ...
+                    'MemoryHard', 0, ...
                     'NJobs', 0, ... 
                     'NoJVM', 1, ...                    
                     'NoLoad', 0, ...                    
@@ -315,6 +316,9 @@ function varargout = APT_run(task, varargin)
         params.KeepTmp = (isempty(params.KeepTmp) && (params.NoLoad || ~isempty(old_params.KeepTmp) && old_params.KeepTmp)) || (~isempty(params.KeepTmp) && params.KeepTmp);        
         if params.Memory == 0
             params.Memory = old_params.Memory;
+        end
+        if params.MemoryHard == 0
+            params.MemoryHard = old_params.MemoryHard;
         end
         resume = 1;
         
@@ -671,7 +675,12 @@ function write_submit_scripts(params)
     if ~params.Memory
         params.Memory = ceil(cluster_arch(3) * 1000 / cluster_arch(2));
     end       
-    swap_allowed = floor(max(0, (cluster_arch(4) - 2) * 1000 / cluster_arch(2)) * params.NSlots);  
+    if ~params.MemoryHard
+        swap_allowed = floor(max(0, (cluster_arch(4) - 2) * 1000 / cluster_arch(2)) * params.NSlots);
+        params.MemoryHard = params.Memory + swap_allowed;
+    else
+        swap_allowed = params.MemoryHard - params.Memory;
+    end
     
     if params.Verbose >= 2
         fprintf('Job memory set to %0.1fGb + %0.1fGb additional. NSlots = %d\n', params.Memory/1000, swap_allowed/1000, max(1, params.NSlots));
@@ -704,7 +713,7 @@ function write_submit_scripts(params)
     for i = 1 : params.NJobs
         fid = fopen(fullfile(sh_dir, sprintf('submit%d.pbs', i)), 'w');
         fprintf(fid,'#$ -l mem_req=%dm\n', params.Memory);
-        fprintf(fid,'#$ -l h_vmem=%dm\n', params.Memory + swap_allowed);
+        fprintf(fid,'#$ -l h_vmem=%dm\n', params.MemoryHard);
         if params.NSlots > 1
             fprintf(fid,'#$ -pe serial %d\n', params.NSlots);    
         end
