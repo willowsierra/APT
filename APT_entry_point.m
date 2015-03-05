@@ -102,7 +102,6 @@ function APT_entry_point(task_id, job_id, fun, clusterID)
         else
             rerunInstances = [];
         end
-            rerunInstances
 
         E = {}; % no error for now
         errorJobIDs = [];
