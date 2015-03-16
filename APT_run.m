@@ -320,7 +320,7 @@ function varargout = APT_run(task, varargin)
         if params.MemoryHard == 0
             params.MemoryHard = old_params.MemoryHard;
         end
-        if numel(params.Libs) == 1 && isempty(params.Libs{1})
+        if isempty(params.Libs) || (numel(params.Libs) == 1 && isempty(params.Libs{1}))
             params.Libs = old_params.Libs;
         end
         resume = 1;
