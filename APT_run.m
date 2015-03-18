@@ -461,13 +461,13 @@ function varargout = APT_run(task, varargin)
                         max_mem = sprintf('%.1fGb', max_mem);
                     else
                         if max_mem < params.Memory * 0.7 / 1000;
-                            fprintf('[%s] Task %s: ===============> PLEASE LOWER MEMORY REQUEST <===============\n', d, params.task_id);
+                            fprintf('[%s] Task %s : ===============> PLEASE LOWER MEMORY REQUEST <===============\n', d, params.task_id);
                         end                    
                         max_mem = sprintf('%.1fGb/%.1fGb', max_mem, params.Memory / 1000);                    
                     end
                 end    
                 n_error = length(find([jobs_info(:).error]));
-                fprintf('[%s] Task %s: %d/%d jobs finished (%d errors), Avg. time: %s, Max. mem: %s\n', d, params.task_id, n_finish, params.NJobs, n_error, mean_time, max_mem);
+                fprintf('[%s] Task %s : %d/%d jobs finished (%d errors), Avg. time: %s, Max. mem: %s\n', d, params.task_id, n_finish, params.NJobs, n_error, mean_time, max_mem);
                 if n_error
                     fprintf('Crashed jobs IDs: %s\n', sprintf(' %d', find([jobs_info(:).error]))); 
                 end                  
