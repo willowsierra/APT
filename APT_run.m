@@ -1162,7 +1162,7 @@ function script = generate_launcher(params, job_file, stop_file)
     fprintf(fid,'	COUNTERJOBS=`%s`\n', allcount);     
     %fprintf(fid,'   if [ "$COUNTERJOBS" -ge "$QUEUE" ]; then\n');   
     fprintf(fid,'   if [ "$COUNTERJOBS" -ge "1000000000" ]; then\n');   
-    fprintf(fid,'       date "+[%%d-%%b-%%Y %%T] Task %s: Cluster queue is full, waiting for free slots."\n', params.task_id);     
+    fprintf(fid,'       date "+[%%d-%%b-%%Y %%T] Task %s : Cluster queue is full, waiting for free slots."\n', params.task_id);
     fprintf(fid,'       LAST=`%s`\n', numjob);
     fprintf(fid,'       if [ "$LAST" -ne "0" ]; then\n');
     fprintf(fid,'           NEWLAST=$LAST\n');
@@ -1174,14 +1174,14 @@ function script = generate_launcher(params, job_file, stop_file)
     fprintf(fid,'   fi\n');        
     fprintf(fid,'	COUNTERJOBS=`%s`\n', cmdcount);    
     fprintf(fid,'   if [ "$COUNTERJOBS" -ge "$MAXJOB" ]; then\n');
-    fprintf(fid,'       date "+[%%d-%%b-%%Y %%T] Task %s: Job number limit reached ($COUNTERJOBS/$MAXJOB slots used)."\n', params.task_id); 
+    fprintf(fid,'       date "+[%%d-%%b-%%Y %%T] Task %s : Job number limit reached ($COUNTERJOBS/$MAXJOB slots used)."\n', params.task_id);
     fprintf(fid,'       while [ "$COUNTERJOBS" -ge "$MAXJOB" ]; do\n');
     fprintf(fid,'           sleep 10\n');
     fprintf(fid,'           COUNTERJOBS=`%s`\n', cmdcount);
     fprintf(fid,'           NEWMAXJOB=$(cat %s)\n', job_limit_file);
     fprintf(fid,'           if [ "$NEWMAXJOB" -ne "$MAXJOB" ]; then\n');
     fprintf(fid,'               MAXJOB=$NEWMAXJOB\n');
-    fprintf(fid,'               date "+[%%d-%%b-%%Y %%T] Task %s: Job number limit reached ($COUNTERJOBS/$MAXJOB slots used)."\n', params.task_id);     
+    fprintf(fid,'               date "+[%%d-%%b-%%Y %%T] Task %s : Job number limit reached ($COUNTERJOBS/$MAXJOB slots used)."\n', params.task_id);
     fprintf(fid,'           fi\n');    
     fprintf(fid,'        done\n');
     fprintf(fid,'    fi\n');    
@@ -1189,7 +1189,7 @@ function script = generate_launcher(params, job_file, stop_file)
     fprintf(fid,'    if [ "$stop" -ne "0" ]; then\n');
     fprintf(fid,'        break\n');
     fprintf(fid,'    fi\n');        
-    fprintf(fid,'    date "+[%%d-%%b-%%Y %%T] Task %s: " | tr -d "\\n"\n', params.task_id);
+    fprintf(fid,'    date "+[%%d-%%b-%%Y %%T] Task %s : " | tr -d "\\n"\n', params.task_id);
     fprintf(fid,'    $QSUB %s\n', fullfile(cluster_drive, sh_dir, 'submit$JOBID.pbs'));    
     fprintf(fid,'    sleep 0.1\n');
     fprintf(fid,'done < $CODESH2\n');
