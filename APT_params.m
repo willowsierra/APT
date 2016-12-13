@@ -37,7 +37,7 @@ function APT_params()
     APT_PARAMS.loc_dir = 'tmp';      
     
     % Force cluster choice : 1 for meleze, 2 for sequoia, 0 for no forcing
-    APT_PARAMS.cluster_id = 0;         
+    APT_PARAMS.cluster_id = 2;         
     
     % Specify nodes which should be used, e.g. use: '{'node017', 'node018',
     % 'node019', 'node020'}' on Sequoia to run on the nodes which have more 
