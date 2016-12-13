@@ -244,7 +244,7 @@ function varargout = APT_run(task, varargin)
                         error('Unknown queue %s for cluster %s.', params.Queues{i}{j}, APT_PARAMS.cluster_IP{params.ClusterID})
                     end
                 elseif i == 2
-                    if isempty(find(strcmp(params.Queues{i}{j}, {'all.q', 'gpu.q', 'goodboy.q'}), 1))
+                    if isempty(find(strcmp(params.Queues{i}{j}, {'all.q', 'gpu.q', 'goodboy.q', 'bigmem.q', 'newgoodboy.q', 'gaia.q', 'titan.q'}), 1))
                         error('Unknown queue %s for cluster %s.', params.Queues{i}{j}, APT_PARAMS.cluster_IP{params.ClusterID})
                     end
                 end
