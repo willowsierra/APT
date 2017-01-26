@@ -83,8 +83,39 @@ To install the Awesome Parallel Toolbox simply follow the following steps :
     . /etc/bashrc
   fi
   ```
-   
 
+4. Installation errors.
+  * Things to check in the new Ubuntu 16.04 setup:
+    - Check that ssh to sequoia is configured properly. The following command should execute in bash without errors:
+    ```
+    ssh sequoia ls
+    ```
+    - Mount sequoia disk for temporary APT files:
+    ```
+    sudo mkdir -p /sequoia/data1
+    sudo mount sequoia.paris.inria.fr:/sequoia/data1 /sequoia/data1
+    ```
+      If the mount is reset after reboot, the second command should be run again.
+    
+  * When trying to run APT toolbox you see
+    ```
+    OpenSSL version mismatch. Built against 1000207f, you have 100010bf
+    ```  
+    The same error appears when you run the following in the MATLAB command line:
+    ```
+    system('ssh sequoia ls')
+    ```
+    The issue happens in the new Ubuntu 16.04 setup because MATLAB has its own version of libcrypto.so.1.0.0 and it is not compatible with ssh installed in Ubuntu 16.04 (similar issue [here](https://github.com/openssl/openssl/issues/1631)).
+
+    Current workaround (a bit brutal and might cause side effects): just replace MATLAB's libcrypto.so.1.0.0 with a soft link to libcrypto.so.1.0.0 of Ubuntu 16.04.
+
+     If MATLAB is installed in /usr/matlab-2016a, the following commands do the job (need root access):
+     ```
+     export MATLAB_PATH=/usr/matlab-2016a
+     sudo mv $MATLAB_PATH/bin/glnxa64/libcrypto.so.1.0.0 $MATLAB_PATH/bin/glnxa64/libcrypto.so.1.0.0.bk
+     sudo ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.0.0 $MATLAB_PATH/bin/glnxa64/libcrypto.so.1.0.0
+     ```
+  
 <a name="quickstart"></a>
 Quick start
 ===========
