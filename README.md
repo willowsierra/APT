@@ -115,6 +115,7 @@ To install the Awesome Parallel Toolbox simply follow the following steps :
      sudo mv $MATLAB_PATH/bin/glnxa64/libcrypto.so.1.0.0 $MATLAB_PATH/bin/glnxa64/libcrypto.so.1.0.0.bk
      sudo ln -s /lib/x86_64-linux-gnu/libcrypto.so.1.0.0 $MATLAB_PATH/bin/glnxa64/libcrypto.so.1.0.0
      ```
+   * If your jobs crash and you get the error ```Undefined function of variable 'APT_getpid'```, you need to build it from Matlab with ```mex APT_getpid``` and rerun ```APT_compile```.
   
 <a name="quickstart"></a>
 Quick start
